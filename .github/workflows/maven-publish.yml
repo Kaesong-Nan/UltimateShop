@@ -1,0 +1,34 @@
+＃此工作流将使用Maven构建一个软件包，然后在创建发行版时将其发布到GitHub软件包
+＃有关更多信息，请参见：https：//github.com/actions/setup-java/blob/main/main/docs/advanced-usage.md#apache-maven-maven-with-with-a-a-settings-path
+
+姓名：名称：Maven软件包
+
+on:
+  release:
+    types: [    类型：[创建]]
+
+jobs:
+  build:
+
+    runs-on:     运行：ubuntu-latest
+    permissions:
+      contents:       内容：阅读
+      packages:       软件包：写
+
+    steps:
+    - uses:     - 用途：Action/Checkout@V4
+    - name:     - 名称：设置JDK 11
+      用途：actions/setup-java@v4
+      和：
+        Java-version ：'11'
+        发行：“ temurin”
+Server-ID：github＃pom.xml的分布管理/存储库/ID字段的值# Value of the distributionManagement/repository/id field of the pom.xml
+        settings-path:         settings-path：$ {{github.workspace}}＃settings.xml文件的位置{{ github.workspace }} # location for the settings.xml file
+
+    - name:     - 名称：用小牛建造
+      run:       运行：MVN -B软件包 - 文件pom.xml
+
+    - name:     - 名称：发布到GitHub软件包Apache Maven
+      run:       运行：MVN部署-s $ github_workspace/settings.xml
+      env:
+        GITHUB_TOKEN:          github_token：$ github.token{{}} { { github.token } }
